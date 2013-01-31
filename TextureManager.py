@@ -1,10 +1,10 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 '''
 Created on 2013-1-25
 
 Function:
-²Î¿¼FileTextureManager.mel£¬´´½¨Æäpython°æ±¾(ÊÊµ±¸ÄÔì),Í¬Ê±Ñ§Ï°py
-Ê¹ÓÃPyQt4×÷ÎªUI
+å‚è€ƒFileTextureManager.melï¼Œåˆ›å»ºå…¶pythonç‰ˆæœ¬(é€‚å½“æ”¹é€ ),åŒæ—¶å­¦ä¹ py
+ä½¿ç”¨PyQt4ä½œä¸ºUI
  
 @author: :     Yuan Wang
 @version: :    0.1
@@ -33,7 +33,7 @@ class Window(QtGui.QMainWindow, Ui_TextureManager):
         self.TextureManager_viewWidget = TextureManager_view()
         self.setCentralWidget(self.TextureManager_viewWidget)
 #===============================================================================
-# ÏÔÊ¾²¿·Ö
+# æ˜¾ç¤ºéƒ¨åˆ†
 #===============================================================================
 class TextureManager_view(QtGui.QWidget):
     '''
@@ -49,60 +49,57 @@ class TextureManager_view(QtGui.QWidget):
         self.ui = Ui_textureView()
         self.ui.setupUi(self)
         
-        self.ui.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  # ¶¨ÒåÓÒ¼ü²Ëµ¥
+        self.ui.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  # å®šä¹‰å³é”®èœå•
         self.ui.treeWidget.connect(self.ui.treeWidget, QtCore.SIGNAL("customContextMenuRequested(QPoint)"), self.rightMenuShow)
         
-        self.ui.targetDir.setText(os.path.normcase(os.path.join(workspace.getPath(), 'textures')))  # ³õÊ¼Éè¶¨targetDir
+        self.ui.targetDir.setText(os.path.normcase(os.path.join(workspace.getPath(), 'textures')))  # åˆå§‹è®¾å®štargetDir
         
         self.ui.refreshButton.clicked.connect(self.FTM_view)
         self.ui.browseFloderbutton.clicked.connect(self.browseFloderbutton)
 #===============================================================================
-# ½çÃæ¶¨ÖÆ
+# ç•Œé¢å®šåˆ¶
 #===============================================================================
-#    def listRightmenu(self):
-#        item=['move','copy']
-
     
     @pyqtSignature('QPoint')
     def rightMenuShow(self, point):
         item = self.ui.treeWidget.itemAt(point)
 
-        #¿Õ°×ÇøÓò²»ÏÔÊ¾²Ëµ¥
+        # ç©ºç™½åŒºåŸŸä¸æ˜¾ç¤ºèœå•
         if item != None:
             self.CreatrightMenu()
 
-    #´´½¨ÓÒ¼ü²Ëµ¥
+    # åˆ›å»ºå³é”®èœå•
     def CreatrightMenu(self):
         self.rightMenu = QtGui.QMenu(self.ui.treeWidget)
-        removeAction = QtGui.QAction(u"É¾³ı", self.ui.treeWidget)       # triggered ÎªÓÒ¼ü²Ëµ¥µã»÷ºóµÄ¼¤»îÊÂ¼ş¡£ÕâÀïslef.closeµ÷ÓÃµÄÊÇÏµÍ³×Ô´øµÄ¹Ø±ÕÊÂ¼ş¡£
+        removeAction = QtGui.QAction(u"åˆ é™¤", self.ui.treeWidget)  # triggered ä¸ºå³é”®èœå•ç‚¹å‡»åçš„æ¿€æ´»äº‹ä»¶ã€‚è¿™é‡Œslef.closeè°ƒç”¨çš„æ˜¯ç³»ç»Ÿè‡ªå¸¦çš„å…³é—­äº‹ä»¶ã€‚
         self.connect(removeAction, QtCore.SIGNAL("triggered()"), self.addItem)
         self.rightMenu.addAction(removeAction)
         
-        addAction = QtGui.QAction(u"Ìí¼Ó", self, triggered=self.addItem)       # Ò²¿ÉÒÔÖ¸¶¨×Ô¶¨Òå¶ÔÏóÊÂ¼ş
+        addAction = QtGui.QAction(u"æ·»åŠ ", self, triggered=self.addItem)  # ä¹Ÿå¯ä»¥æŒ‡å®šè‡ªå®šä¹‰å¯¹è±¡äº‹ä»¶
         self.rightMenu.addAction(addAction)
         self.rightMenu.exec_(QtGui.QCursor.pos())
     def addItem(self):
         print 'a'
 #===============================================================================
-# ¸¨Öú¹¦ÄÜ
+# è¾…åŠ©åŠŸèƒ½
 #===============================================================================
     def fileNameDialog(self):
         '''
-        ²úÉú¶Ô»°¿ò£¬Ñ¡ÔñÎÄ¼ş
+        äº§ç”Ÿå¯¹è¯æ¡†ï¼Œé€‰æ‹©æ–‡ä»¶
         '''
         fileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", '/', "Image Files(*.png *.jpg *.bmp)")
         return fileName
     
     def floderDialog(self):
         '''
-        Ñ¡ÔñÎÄ¼ş¼Ğ
+        é€‰æ‹©æ–‡ä»¶å¤¹
         '''
         floderName = QtGui.QFileDialog.getExistingDirectory(self, "Find Floder", QtCore.QDir.currentPath())
         return floderName
     
     def intersectionList(self, a, b):
         '''
-        µÃµ½Á½¸öÁĞ±íµÄ½»¼¯
+        å¾—åˆ°ä¸¤ä¸ªåˆ—è¡¨çš„äº¤é›†
         :param a:
         :param b:
         '''
@@ -110,22 +107,22 @@ class TextureManager_view(QtGui.QWidget):
         return [item for item in a if item in s]
     def differenceList(self, a, b):
         '''
-        µÃµ½Á½¸öÁĞ±íµÄ²î¼¯
+        å¾—åˆ°ä¸¤ä¸ªåˆ—è¡¨çš„å·®é›†
         :param a:
         :param b:
         '''
         s = set(b)
         return [item for item in a if item not in s]     
 #===============================================================================
-# viewÖ÷Ìå
+# viewä¸»ä½“
 #===============================================================================
     def FTM_FileTextureFind(self):
         '''
-        ËÑË÷³¡¾°ÖĞfileÌùÍ¼ÎÄ¼ş,Í¬Ê±×Ô¶¯É¾³ıÎ´Ê¹ÓÃµÄfileNode
+        æœç´¢åœºæ™¯ä¸­fileè´´å›¾æ–‡ä»¶,åŒæ—¶è‡ªåŠ¨åˆ é™¤æœªä½¿ç”¨çš„fileNode
         '''
         
-        textureNodes = {}  # ´æ·ÅNodeÓëÌùÍ¼Â·¾¶
-        texturePaths = []  # ´æ·ÅÌùÍ¼Â·¾¶
+        textureNodes = {}  # å­˜æ”¾Nodeä¸è´´å›¾è·¯å¾„
+        texturePaths = []  # å­˜æ”¾è´´å›¾è·¯å¾„
         
         fileNodes = ls(type='file')
         if not len(fileNodes) == 0:
@@ -134,7 +131,7 @@ class TextureManager_view(QtGui.QWidget):
 #                if fileName == '':
 #                    delete(fileNode)
 #                    continue
-                textureNodes.setdefault(fileNode, fileName)  # „“½¨×Öµä,key:node value:filename
+                textureNodes.setdefault(fileNode, fileName)  # å‰µå»ºå­—å…¸,key:node value:filename
                 texturePath = os.path.dirname(fileName)
                 texturePaths.append(texturePath)
                 texturePaths = sorted(set(texturePaths), key=texturePaths.index)
@@ -146,12 +143,12 @@ class TextureManager_view(QtGui.QWidget):
             
     def FTM_FileTextureAnalyst_badFileNode(self):
         '''
-        ÕÒ³öÌùÍ¼¶ªÊ§µÄfileNode
+        æ‰¾å‡ºè´´å›¾ä¸¢å¤±çš„fileNode
         '''
         textureNodes, texturePaths = self.FTM_FileTextureFind()
         badNodes = []
         for Node, fileName in textureNodes.items():
-            if os.path.isabs(fileName) == False:  # ÅĞ”àÊÇ·ñÊÇÏàŒ¦Â·½,Èç¹ûÊÇ,„tÔö¼Ó¹¤³ÌÄ¿ä›
+            if os.path.isabs(fileName) == False:  # åˆ¤æ–·æ˜¯å¦æ˜¯ç›¸å°è·¯å¾‘,å¦‚æœæ˜¯,å‰‡å¢åŠ å·¥ç¨‹ç›®éŒ„
                 projectPath = workspace.getPath()
                 fileName = os.path.join(projectPath, fileName)
             if os.path.exists(fileName) == False:
@@ -160,7 +157,7 @@ class TextureManager_view(QtGui.QWidget):
     
     def FTM_FileTextureAnalyst_dirDict(self):
         '''
-        µÃµ½ÒÔfilename×÷ ‘keyµÄ×Öµä,{filePath:(node1,node2,¡­¡­)}
+        å¾—åˆ°ä»¥filenameä½œçˆ²keyçš„å­—å…¸,{filePath:(node1,node2,â€¦â€¦)}
         '''
         textureNodes, texturePaths = self.FTM_FileTextureFind()
         dirDict = {}
@@ -174,14 +171,14 @@ class TextureManager_view(QtGui.QWidget):
     
     def FTM_view(self):
         '''
-        Ë¢ĞÂview£¬Ê¹ÓÃQtviewWidget
+        åˆ·æ–°viewï¼Œä½¿ç”¨QtviewWidget
         '''
         dirDict = self.FTM_FileTextureAnalyst_dirDict()
         badNodes = self.FTM_FileTextureAnalyst_badFileNode()
 
         self.ui.treeWidget.clear()          
         for filePath, fileNode in dirDict.iteritems() :
-            path = QtGui.QTreeWidgetItem(self.ui.treeWidget)  # µÃµ½treewidget
+            path = QtGui.QTreeWidgetItem(self.ui.treeWidget)  # å¾—åˆ°treewidget
             if filePath == "":
                 path.setText(0, ' %s texture(s) NOT specified. ' % str(len(fileNode)))
                 path.setText(1, 'So they are NOT exist(s).')
@@ -189,7 +186,7 @@ class TextureManager_view(QtGui.QWidget):
                 path.setText(0, ' %s texture(s) point to' % str(len(fileNode)))
                 path.setText(0, ' %s texture(s) point to' % str(len(fileNode)))
                 path.setText(1, filePath)
-                noExistNode = []  # ¼ÇÂ¼Ã¿¸öÁËÂ·¾¶ÏÂfile½ÚµãµÄÇé¿ö
+                noExistNode = []  # è®°å½•æ¯ä¸ªäº†è·¯å¾„ä¸‹fileèŠ‚ç‚¹çš„æƒ…å†µ
                 ExistNode = []
                 if self.intersectionList(fileNode, badNodes) != 0:
                     noExistNode = self.intersectionList(fileNode, badNodes)          
@@ -215,11 +212,11 @@ class TextureManager_view(QtGui.QWidget):
                     
 
 #===============================================================================
-# ÎÄ¼ş¼Ğ²Ù×÷²¿·Ö
+# æ–‡ä»¶å¤¹æ“ä½œéƒ¨åˆ†
 #===============================================================================
     def browseFloderbutton(self):
         '''
-        browsebutton£¬´´½¨dialog£¬µÃµ½Ñ¡ÔñµÄÎÄ¼ş¼Ğ
+        browsebuttonï¼Œåˆ›å»ºdialogï¼Œå¾—åˆ°é€‰æ‹©çš„æ–‡ä»¶å¤¹
         '''
         floder = self.floderDialog()
         print floder

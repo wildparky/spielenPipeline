@@ -2,7 +2,7 @@
 Created on 2013-1-25
 
 Function:
-½«FileTextureManager.mel×ª»¯Îªpython°æ±¾(ÊÊµ±¸ÄÔì),Í¬Ê±Ñ§Ï°py
+ï¿½ï¿½FileTextureManager.mel×ªï¿½ï¿½Îªpythonï¿½æ±¾(ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½),Í¬Ê±Ñ§Ï°py
  
 @author: :     Yuan Wang
 @version: :    0.1
@@ -17,15 +17,15 @@ class TextureManager(object):
     '''
     classdocs
     '''  
-    textureNodes = {}  # ´æ·ÅNodeÓëÌùÍ¼Â·¾¶,key:node value:filename
-    texturePaths = []  # µ¥¶À´æ·ÅÌùÍ¼µÄÂ·¾¶
+    textureNodes = {}  # ï¿½ï¿½ï¿½Nodeï¿½ï¿½ï¿½ï¿½Í¼Â·ï¿½ï¿½,key:node value:filename
+    texturePaths = []  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Â·ï¿½ï¿½
     fileNodes = ls(type='file')
     for fileNode in fileNodes:
         fileName = fileNode.ftn.get()
         if fileName == '':
             delete(fileNode)
             continue
-        textureNodes.setdefault(fileNode, fileName)  # „“½¨×Öµä
+        textureNodes.setdefault(fileNode, fileName)  # ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½
         Path = os.path.dirname(fileNode)
         texturePaths.append(Path)
     texturePaths = sorted(set(texturePaths), key=texturePaths.index)
@@ -41,25 +41,25 @@ class TextureManager(object):
 
     def FTM_SelCheck(self, Node):
         '''
-        ÅĞ¶ÏÊÇ·ñÑ¡ÔñÁËfile½Úµã
-        :param Node:½Úµã
+        ï¿½Ğ¶ï¿½ï¿½Ç·ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½fileï¿½Úµï¿½
+        :param Node:ï¿½Úµï¿½
         '''
         sel = 0
         if len(Node):
             sel = 1
         else:     
-            confirmDialog(title='File Texture Manager', message='ÖÁÉÙÑ¡ÔñÒ»¸öÌùÍ¼ÎÄ¼ş!', button=['ok'])
+            confirmDialog(title='File Texture Manager', message='ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Ä¼ï¿½!', button=['ok'])
         return sel
     
     def FTM_End(self):
         '''
-        ÌáĞÑÊ¹ÓÃÕßÈÎÎñÍê³É.
+        ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
         '''
-        confirmDialog(title='File Texture Manager', message='´¦ÀíÍê³É.\nÏêÇé²Î¿¼Script Editor.', messageAlign='center', button=['ok'])
+        confirmDialog(title='File Texture Manager', message='ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.\nï¿½ï¿½ï¿½ï¿½Î¿ï¿½Script Editor.', messageAlign='center', button=['ok'])
     
     def FTM_log(self, type, Node, log):
         '''
-        Ìá¹©log,ÔÚScriptÖĞÏÔÊ¾
+        ï¿½á¹©log,ï¿½ï¿½Scriptï¿½ï¿½ï¿½ï¿½Ê¾
         :param type:
         :param Node:
         :param log:
@@ -80,14 +80,14 @@ class TextureManager(object):
             finlog = log
         print finlog
     #===============================================================================
-    # ˆö¾°ÕûÀí²¿·Ö
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½
     #===============================================================================
     def FTM_FileTextureFind(self):
         '''
-        ËÑË÷³¡¾°ÖĞfileÌùÍ¼ÎÄ¼ş,Í¬Ê±×Ô¶¯É¾³ıÎ´Ê¹ÓÃµÄfileNode
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fileï¿½ï¿½Í¼ï¿½Ä¼ï¿½,Í¬Ê±ï¿½Ô¶ï¿½É¾ï¿½ï¿½Î´Ê¹ï¿½Ãµï¿½fileNode
         '''
         
-        textureNodes = {}  # ´æ·ÅNodeÓëÌùÍ¼Â·¾¶
+        textureNodes = {}  # ï¿½ï¿½ï¿½Nodeï¿½ï¿½ï¿½ï¿½Í¼Â·ï¿½ï¿½
         
         fileNodes = ls(type='file')
         if len(fileNodes):
@@ -96,46 +96,46 @@ class TextureManager(object):
                 if fileName == '':
                     delete(fileNode)
                     continue
-                textureNodes.setdefault(fileNode, fileName)  # „“½¨×Öµä,key:node value:filename
+                textureNodes.setdefault(fileNode, fileName)  # ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½,key:node value:filename
             return textureNodes
         else:
-            confirmDialog(title='File Texture Manager', message='³¡¾°ÖĞÃ»ÓĞFile½Úµã', button=['ok'])
+            confirmDialog(title='File Texture Manager', message='ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Fileï¿½Úµï¿½', button=['ok'])
     
     def FTM_FileTextureAnalyst_dir(self):
         '''
-        ÕûÀí³¡¾°ÖĞµÄÌùÍ¼ÎÄ¼ş.ÕûÀíÎÄ¼ş¼ĞµÄÊıÁ¿
+        ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½Í¼ï¿½Ä¼ï¿½.ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½
         '''
         textureNodes = FTM_FileTextureFind()
         texturePaths = []
         dirPaths = []
         for fileName in textureNodes.values():
-            texturePaths.append(fileName)  # µÃµ½ÎÄ¼şÂ·¾¶ÓëÎÄ¼şÃû
+            texturePaths.append(fileName)  # ï¿½Ãµï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
             
         for path in texturePaths:
             dirPath = os.path.dirname(path)
-            dirPaths.append(dirPath)  # ÌáÈ¡ÎÄ¼şÂ·¾¶
+            dirPaths.append(dirPath)  # ï¿½ï¿½È¡ï¿½Ä¼ï¿½Â·ï¿½ï¿½
         
-        dirPaths = sorted(set(dirPaths), key=dirPaths.index)  # È¥³ıÖØ¸´ dirPaths=list(set(dirPaths))
+        dirPaths = sorted(set(dirPaths), key=dirPaths.index)  # È¥ï¿½ï¿½ï¿½Ø¸ï¿½ dirPaths=list(set(dirPaths))
         return dirPaths
     
     def FTM_FileTextureAnalyst_badFileNode(self):
         '''
-        ÕÒ³öÌùÍ¼¶ªÊ§µÄfileNode
+        ï¿½Ò³ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ê§ï¿½ï¿½fileNode
         '''
         textureNodes = FTM_FileTextureFind()
         badNodes = []
         for Node, fileName in textureNodes.items():
-            if os.path.isabs(fileName) == False:  # ÅĞ”àÊÇ·ñÊÇÏàŒ¦Â·½,Èç¹ûÊÇ,„tÔö¼Ó¹¤³ÌÄ¿ä›
+            if os.path.isabs(fileName) == False:  # ï¿½Ğ”ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½tï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½Ä¿ï¿½
                 projectPath = workspace.getPath()
                 fileName = os.path.join(projectPath, fileName)
             if os.path.exists(fileName) == False:
                 badNodes.append(Node)
         return badNodes
     
-    # badNodes †ÎªšÁĞ³ö\ÆäËûµÄÕı³£ÎÄ¼ş°´ÕÕÄ¿ä›·Öî
+    # badNodes ï¿½Îªï¿½ï¿½Ğ³ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ä›·ï¿½ï¿½
     def FTM_FileTextureAnalyst_badDirpath(self):
         '''
-        µÃµ½åeÕ`ÙNˆDµÄÎÄ¼şÂ·½
+        ï¿½Ãµï¿½ï¿½eï¿½`ï¿½Nï¿½Dï¿½ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½
         '''
         badNodes = FTM_FileTextureAnalyst_badFileNode()
         textureNodes = FTM_FileTextureFind()
@@ -149,7 +149,7 @@ class TextureManager(object):
     
     def FTM_FileTextureAnalyst_dirDict(self):
         '''
-        µÃµ½ÒÔfilename×÷ ‘keyµÄ×Öµä,{fileName:(node1,node2)}
+        ï¿½Ãµï¿½ï¿½ï¿½filenameï¿½ï¿½ï¿½ï¿½keyï¿½ï¿½ï¿½Öµï¿½,{fileName:(node1,node2)}
         '''
         textureNodes = FTM_FileTextureFind()
         dirPaths = FTM_FileTextureAnalyst_dir()
@@ -163,18 +163,87 @@ class TextureManager(object):
         return dirDict  
     
     #===============================================================================
-    # ÎÄ¼ş²Ù×÷²¿·Ö
+    # ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     #===============================================================================
     def FTM_FileTexture_setNode(self, nodes, path):
         '''
-        ÔOÖÃfilenodeµÄÖµ
-        :param nodes:ßxÖĞµÄfilenode
-        :param path:Ä¿˜ËÂ·½
+        ï¿½Oï¿½ï¿½filenodeï¿½ï¿½Öµ
+        :param nodes:ï¿½xï¿½Ğµï¿½filenode
+        :param path:Ä¿ï¿½ï¿½Â·ï¿½ï¿½
         '''
         textureNode = FTM_FileTextureFind()
         for node in nodes :
             textureName = os.path.basename(textureNode[node])
             neuPath = os.path.join(path, textureName)       
             node.ftn.set(neuPath, typ='string')
+#===============================================================================
+# 
+#===============================================================================
+from PyQt4 import QtCore, QtGui, uic
+from PyQt4.QtCore import pyqtSignature
+
+class Ui_formDialog(QtGui.QDialog):
+
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self)
+        uic.loadUi("form.ui", self)        #form.ui  ä¸ºQTç•Œé¢æ–‡ä»¶ QListWidgetå¯¹è±¡åä¸º listView1
+        self.listDataBind()                  #æ·»åŠ QListWidgetItme
+        self.listView1.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)   #å®šä¹‰å³é”®èœå•
         
+    def listDataBind(self):
+        item = ['OaK','Banana','Apple','Orange','Grapes','Jayesh']
+        for lst in item:
+            self.listView1.addItem(QtGui.QListWidgetItem(lst))
+   
+    #æ¿€æ´»èœå•äº‹ä»¶
+    @pyqtSignature('QPoint')
+    def on_listView1_customContextMenuRequested(self, point):
+        item = self.listView1.itemAt(point)
+        #ç©ºç™½åŒºåŸŸä¸æ˜¾ç¤ºèœå•
+        if item != None:
+           self.rightMenuShow()
+
+    #åˆ›å»ºå³é”®èœå•
+    def rightMenuShow(self):
+        rightMenu = QtGui.QMenu(self.listView1)
+        removeAction = QtGui.QAction(u"åˆ é™¤", self, triggered=self.close)       # triggered ä¸ºå³é”®èœå•ç‚¹å‡»åçš„æ¿€æ´»äº‹ä»¶ã€‚è¿™é‡Œslef.closeè°ƒç”¨çš„æ˜¯ç³»ç»Ÿè‡ªå¸¦çš„å…³é—­äº‹ä»¶ã€‚
+        rightMenu.addAction(removeAction)
         
+        addAction = QtGui.QAction(u"æ·»åŠ ", self, triggered=self.addItem)       # ä¹Ÿå¯ä»¥æŒ‡å®šè‡ªå®šä¹‰å¯¹è±¡äº‹ä»¶
+        rightMenu.addAction(addAction)
+        rightMenu.exec_(QtGui.QCursor.pos())
+       
+    def addItem(self):
+        pass
+#===============================================================================
+# 
+#===============================================================================
+
+from PyQt4 import QtCore, QtGui
+
+class ListWidgetWithPopupMenu(QtGui.QListWidget):
+    def __init__(self, parent=None):
+        QtGui.QListWidget.__init__(self, parent)
+        
+        for i in range(10):
+            self.addItem('item%d' % i)
+    
+        self.contextMenu = QtGui.QMenu(self)
+        action = QtGui.QAction('Current Item', self)
+        self.connect(action, QtCore.SIGNAL("triggered()"), self.showCurrentItem)
+        self.contextMenu.addAction(action)
+    
+    def showCurrentItem(self):
+        print self.currentItem().text()
+    
+    def contextMenuEvent(self, event):
+        self.contextMenu.exec_(event.globalPos())
+
+if __name__ == '__main__':
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    lw = ListWidgetWithPopupMenu()
+    lw.show()
+    sys.exit(app.exec_())
+
+
