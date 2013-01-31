@@ -17,6 +17,7 @@ import maya.OpenMayaUI as mui
 import os
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import pyqtSignature
 import sip
 
 from UI.TextureManagement import Ui_TextureManager
@@ -47,28 +48,56 @@ class TextureManager_view(QtGui.QWidget):
       
         self.ui = Ui_textureView()
         self.ui.setupUi(self)
-                  
-        self.ui.targetDir.setText(os.path.normcase(os.path.join(workspace.getPath(),'textures')))
-        #初始设定targetDir
+        
+        self.ui.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)  # 定义右键菜单
+        self.ui.treeWidget.connect(self.ui.treeWidget, QtCore.SIGNAL("customContextMenuRequested(QPoint)"), self.rightMenuShow)
+        
+        self.ui.targetDir.setText(os.path.normcase(os.path.join(workspace.getPath(), 'textures')))  # 初始设定targetDir
         
         self.ui.refreshButton.clicked.connect(self.FTM_view)
         self.ui.browseFloderbutton.clicked.connect(self.browseFloderbutton)
-
 #===============================================================================
-#辅助功能
+# 界面定制
+#===============================================================================
+#    def listRightmenu(self):
+#        item=['move','copy']
+
+    
+    @pyqtSignature('QPoint')
+    def rightMenuShow(self, point):
+        item = self.ui.treeWidget.itemAt(point)
+
+        #空白区域不显示菜单
+        if item != None:
+            self.CreatrightMenu()
+
+    #创建右键菜单
+    def CreatrightMenu(self):
+        self.rightMenu = QtGui.QMenu(self.ui.treeWidget)
+        removeAction = QtGui.QAction(u"删除", self.ui.treeWidget)       # triggered 为右键菜单点击后的激活事件。这里slef.close调用的是系统自带的关闭事件。
+        self.connect(removeAction, QtCore.SIGNAL("triggered()"), self.addItem)
+        self.rightMenu.addAction(removeAction)
+        
+        addAction = QtGui.QAction(u"添加", self, triggered=self.addItem)       # 也可以指定自定义对象事件
+        self.rightMenu.addAction(addAction)
+        self.rightMenu.exec_(QtGui.QCursor.pos())
+    def addItem(self):
+        print 'a'
+#===============================================================================
+# 辅助功能
 #===============================================================================
     def fileNameDialog(self):
         '''
         产生对话框，选择文件
         '''
-        fileName=QtGui.QFileDialog.getOpenFileName(self,"Open file",'/',"Image Files(*.png *.jpg *.bmp)")
+        fileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", '/', "Image Files(*.png *.jpg *.bmp)")
         return fileName
     
     def floderDialog(self):
         '''
         选择文件夹
         '''
-        floderName=QtGui.QFileDialog.getExistingDirectory(self, "Find Floder", QtCore.QDir.currentPath())
+        floderName = QtGui.QFileDialog.getExistingDirectory(self, "Find Floder", QtCore.QDir.currentPath())
         return floderName
     
     def intersectionList(self, a, b):
@@ -152,7 +181,7 @@ class TextureManager_view(QtGui.QWidget):
 
         self.ui.treeWidget.clear()          
         for filePath, fileNode in dirDict.iteritems() :
-            path = QtGui.QTreeWidgetItem(self.ui.treeWidget) #得到treewidget
+            path = QtGui.QTreeWidgetItem(self.ui.treeWidget)  # 得到treewidget
             if filePath == "":
                 path.setText(0, ' %s texture(s) NOT specified. ' % str(len(fileNode)))
                 path.setText(1, 'So they are NOT exist(s).')
@@ -171,16 +200,16 @@ class TextureManager_view(QtGui.QWidget):
                 numnoExistNode = QtGui.QTreeWidgetItem(path)
                 numnoExistNode.setText(0, ' %s of them NOT exist(s).' % str(len(noExistNode)))
                 for node in noExistNode :
-                    nodeID=QtGui.QTreeWidgetItem(numnoExistNode)
-                    nodeID.setText(0,'%s' % str(node))
-                    nodeID.setText(1,'....../%s' % os.path.split(node.ftn.get())[1])
+                    nodeID = QtGui.QTreeWidgetItem(numnoExistNode)
+                    nodeID.setText(0, '%s' % str(node))
+                    nodeID.setText(1, '....../%s' % os.path.split(node.ftn.get())[1])
                     
                 numExistNode = QtGui.QTreeWidgetItem(path)
                 numExistNode.setText(0, ' %s of them exist(s).' % str(len(ExistNode)))   
                 for node in ExistNode :
-                    nodeID=QtGui.QTreeWidgetItem(numExistNode)
-                    nodeID.setText(0,'%s' % str(node))
-                    nodeID.setText(1,'....../%s' % os.path.split(node.ftn.get())[1])
+                    nodeID = QtGui.QTreeWidgetItem(numExistNode)
+                    nodeID.setText(0, '%s' % str(node))
+                    nodeID.setText(1, '....../%s' % os.path.split(node.ftn.get())[1])
            
                         
                     
@@ -192,7 +221,7 @@ class TextureManager_view(QtGui.QWidget):
         '''
         browsebutton，创建dialog，得到选择的文件夹
         '''
-        floder=self.floderDialog()
+        floder = self.floderDialog()
         print floder
         self.ui.targetDir.setText('%s' % floder)
         
