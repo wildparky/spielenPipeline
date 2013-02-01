@@ -71,15 +71,21 @@ class TextureManager_view(QtGui.QWidget):
     # 创建右键菜单
     def CreatrightMenu(self):
         self.rightMenu = QtGui.QMenu(self.ui.treeWidget)
-        removeAction = QtGui.QAction(u"删除", self.ui.treeWidget)  # triggered 为右键菜单点击后的激活事件。这里slef.close调用的是系统自带的关闭事件。
-        self.connect(removeAction, QtCore.SIGNAL("triggered()"), self.addItem)
-        self.rightMenu.addAction(removeAction)
+
+        OpenAction = QtGui.QAction(u"Open", self.ui.treeWidget)  # triggered 为右键菜单点击后的激活事件。
+        self.connect(OpenAction, QtCore.SIGNAL("triggered()"), self.FTM_FileTextureOpen)
+        self.rightMenu.addAction(OpenAction)
         
-        addAction = QtGui.QAction(u"添加", self, triggered=self.addItem)  # 也可以指定自定义对象事件
-        self.rightMenu.addAction(addAction)
+        MoveAction = QtGui.QAction(u"Move", self.ui.treeWidget)  
+        self.connect(MoveAction, QtCore.SIGNAL("triggered()"), self.FTM_FileTextureMove)
+        self.rightMenu.addAction(MoveAction)
+        
+        CopyAction = QtGui.QAction(u"Copy", self.ui.treeWidget)  
+        self.connect(CopyAction, QtCore.SIGNAL("triggered()"), self.FTM_FileTextureCopy)
+        self.rightMenu.addAction(CopyAction)
+        
         self.rightMenu.exec_(QtGui.QCursor.pos())
-    def addItem(self):
-        print 'a'
+
 #===============================================================================
 # 辅助功能
 #===============================================================================
@@ -145,9 +151,9 @@ class TextureManager_view(QtGui.QWidget):
         '''
         找出贴图丢失的fileNode
         '''
-        textureNodes, texturePaths = self.FTM_FileTextureFind()
+        textureNodes = self.FTM_FileTextureFind()
         badNodes = []
-        for Node, fileName in textureNodes.items():
+        for Node, fileName in textureNodes[0].items():
             if os.path.isabs(fileName) == False:  # 判斷是否是相對路徑,如果是,則增加工程目錄
                 projectPath = workspace.getPath()
                 fileName = os.path.join(projectPath, fileName)
@@ -175,13 +181,20 @@ class TextureManager_view(QtGui.QWidget):
         '''
         dirDict = self.FTM_FileTextureAnalyst_dirDict()
         badNodes = self.FTM_FileTextureAnalyst_badFileNode()
+        filePaths = sorted(dirDict.keys())
 
-        self.ui.treeWidget.clear()          
-        for filePath, fileNode in dirDict.iteritems() :
-            path = QtGui.QTreeWidgetItem(self.ui.treeWidget)  # 得到treewidget
+        self.ui.treeWidget.clear()   
+        for  filePath in filePaths:
+            fileNode = dirDict[filePath]
+            path = QtGui.QTreeWidgetItem(self.ui.treeWidget)  # 得到QTreewidget
             if filePath == "":
                 path.setText(0, ' %s texture(s) NOT specified. ' % str(len(fileNode)))
                 path.setText(1, 'So they are NOT exist(s).')
+                path.setTextColor(0, QtGui.QColor(224, 27, 106))  
+                for node in fileNode :
+                    specifiedNode = QtGui.QTreeWidgetItem(path)
+                    specifiedNode.setText(0, '%s' % node)
+                
             else:
                 path.setText(0, ' %s texture(s) point to' % str(len(fileNode)))
                 path.setText(0, ' %s texture(s) point to' % str(len(fileNode)))
@@ -196,20 +209,19 @@ class TextureManager_view(QtGui.QWidget):
                              
                 numnoExistNode = QtGui.QTreeWidgetItem(path)
                 numnoExistNode.setText(0, ' %s of them NOT exist(s).' % str(len(noExistNode)))
+                numnoExistNode.setTextColor(0, QtGui.QColor(224, 27, 106))  
                 for node in noExistNode :
                     nodeID = QtGui.QTreeWidgetItem(numnoExistNode)
                     nodeID.setText(0, '%s' % str(node))
                     nodeID.setText(1, '....../%s' % os.path.split(node.ftn.get())[1])
                     
                 numExistNode = QtGui.QTreeWidgetItem(path)
-                numExistNode.setText(0, ' %s of them exist(s).' % str(len(ExistNode)))   
+                numExistNode.setText(0, ' %s of them exist(s).' % str(len(ExistNode))) 
+                numExistNode.setTextColor(0, QtGui.QColor(73, 209, 73))  
                 for node in ExistNode :
                     nodeID = QtGui.QTreeWidgetItem(numExistNode)
                     nodeID.setText(0, '%s' % str(node))
                     nodeID.setText(1, '....../%s' % os.path.split(node.ftn.get())[1])
-           
-                        
-                    
 
 #===============================================================================
 # 文件夹操作部分
@@ -221,6 +233,35 @@ class TextureManager_view(QtGui.QWidget):
         floder = self.floderDialog()
         print floder
         self.ui.targetDir.setText('%s' % floder)
+        
+    def findChildNodes(self):
+        '''
+        找到鼠标选择的qtreewidget的file节点
+        '''
+        currentItem = self.ui.treeWidget.currentItem()  # 得到当前鼠标所选择的Item
+        num = currentItem.columnCount()
+        nodes = []            
+        if num != 0 :
+            for i in num :
+                child = currentItem.child(i).text[0]
+                nodes.append(child)
+#        elif currentItem.text[0]
+            
+    def FTM_FileTextureOpen(self):
+#        node = 
+#        selected = QtGui.QTreeWidgetItem(self.ui.treeWidget)
+        selected = self.ui.treeWidget.currentItem().child(0)
+        child = self.ui.treeWidget.findChild(QtGui.QTreeWidget, 'treeWidget')
+        print selected
+    
+    def FTM_FileTextureMove(self):
+        '''
+        移动选择的贴图文件到targetDir
+        :param file:
+        '''
+        print 'move'
+    def FTM_FileTextureCopy(self):
+        print 'copy'
         
 #===============================================================================
 # show
