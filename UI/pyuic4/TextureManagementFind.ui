@@ -33,6 +33,12 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
        <attribute name="headerVisible">
         <bool>true</bool>
        </attribute>
@@ -42,8 +48,14 @@
        <attribute name="headerDefaultSectionSize">
         <number>200</number>
        </attribute>
+       <attribute name="headerHighlightSections">
+        <bool>false</bool>
+       </attribute>
        <attribute name="headerMinimumSectionSize">
-        <number>21</number>
+        <number>200</number>
+       </attribute>
+       <attribute name="headerShowSortIndicator" stdset="0">
+        <bool>false</bool>
        </attribute>
        <column>
         <property name="text">

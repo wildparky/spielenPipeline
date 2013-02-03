@@ -73,7 +73,7 @@ class TextureManager_view(QtGui.QWidget):
         self.rightMenu = QtGui.QMenu(self.ui.treeWidget)
 
         OpenAction = QtGui.QAction(u"Open", self.ui.treeWidget)  # triggered 为右键菜单点击后的激活事件。
-        self.connect(OpenAction, QtCore.SIGNAL("triggered()"), self.FTM_FileTextureOpen)
+        self.connect(OpenAction, QtCore.SIGNAL("triggered()"), self.findChildNodes)
         self.rightMenu.addAction(OpenAction)
         
         MoveAction = QtGui.QAction(u"Move", self.ui.treeWidget)  
@@ -182,7 +182,7 @@ class TextureManager_view(QtGui.QWidget):
         dirDict = self.FTM_FileTextureAnalyst_dirDict()
         badNodes = self.FTM_FileTextureAnalyst_badFileNode()
         filePaths = sorted(dirDict.keys())
-
+        path = QtGui.QTreeWidgetItem(self.ui.treeWidget)  # 得到QTreewidget
         self.ui.treeWidget.clear()   
         for  filePath in filePaths:
             fileNode = dirDict[filePath]
@@ -190,14 +190,15 @@ class TextureManager_view(QtGui.QWidget):
             if filePath == "":
                 path.setText(0, ' %s texture(s) NOT specified. ' % str(len(fileNode)))
                 path.setText(1, 'So they are NOT exist(s).')
-                path.setTextColor(0, QtGui.QColor(224, 27, 106))  
+                path.setTextColor(0, QtGui.QColor(224, 27, 106)) 
+                path.setToolTip(0, 'path not exist(s)') 
                 for node in fileNode :
                     specifiedNode = QtGui.QTreeWidgetItem(path)
                     specifiedNode.setText(0, '%s' % node)
-                
+                    specifiedNode.setToolTip(0, 'filenode')  # 标识出这是filenode节点
             else:
                 path.setText(0, ' %s texture(s) point to' % str(len(fileNode)))
-                path.setText(0, ' %s texture(s) point to' % str(len(fileNode)))
+                path.setToolTip(0, 'path')
                 path.setText(1, filePath)
                 noExistNode = []  # 记录每个了路径下file节点的情况
                 ExistNode = []
@@ -209,18 +210,22 @@ class TextureManager_view(QtGui.QWidget):
                              
                 numnoExistNode = QtGui.QTreeWidgetItem(path)
                 numnoExistNode.setText(0, ' %s of them NOT exist(s).' % str(len(noExistNode)))
+                numnoExistNode.setToolTip(0, 'file not exist(s)')
                 numnoExistNode.setTextColor(0, QtGui.QColor(224, 27, 106))  
                 for node in noExistNode :
                     nodeID = QtGui.QTreeWidgetItem(numnoExistNode)
                     nodeID.setText(0, '%s' % str(node))
+                    nodeID.setToolTip(0, 'filenode')
                     nodeID.setText(1, '....../%s' % os.path.split(node.ftn.get())[1])
                     
                 numExistNode = QtGui.QTreeWidgetItem(path)
-                numExistNode.setText(0, ' %s of them exist(s).' % str(len(ExistNode))) 
+                numExistNode.setText(0, ' %s of them exist(s).' % str(len(ExistNode)))
+                numExistNode.setToolTip(0, 'file exist(s)') 
                 numExistNode.setTextColor(0, QtGui.QColor(73, 209, 73))  
                 for node in ExistNode :
                     nodeID = QtGui.QTreeWidgetItem(numExistNode)
                     nodeID.setText(0, '%s' % str(node))
+                    nodeID.setToolTip(0, 'filenode')
                     nodeID.setText(1, '....../%s' % os.path.split(node.ftn.get())[1])
 
 #===============================================================================
@@ -238,14 +243,41 @@ class TextureManager_view(QtGui.QWidget):
         '''
         找到鼠标选择的qtreewidget的file节点
         '''
-        currentItem = self.ui.treeWidget.currentItem()  # 得到当前鼠标所选择的Item
-        num = currentItem.columnCount()
-        nodes = []            
-        if num != 0 :
-            for i in num :
-                child = currentItem.child(i).text[0]
-                nodes.append(child)
-#        elif currentItem.text[0]
+        path = self.ui.treeWidget.currentItem()  # 得到当前鼠标所选择的Item
+        pathToolTip = path.toolTip(0)
+        nodes = []
+        
+        if pathToolTip == 'filenode':  # 直接选择了node的情况
+            nodes.append(path.text(0))
+            
+        elif pathToolTip == 'file exist(s)' or pathToolTip == 'file not exist(s)' :  # 选择了
+            childCount = path.childCount()
+            if childCount != 0 :
+                for i in range(childCount):
+                    node = path.child(i).text(0)
+                    nodes.append(node)
+            else :
+                QtGui.QMessageBox.warning(self,
+                "warning",
+                "No fileNode found!\n")
+                
+        elif pathToolTip == 'path':
+            for i in range(2):
+                child = path.child(i)
+                childCount = child.childCount()
+                if childCount != 0:
+                    for i in range(childCount):
+                        node = child.child(i)
+                        if node.toolTip(0) == 'filenode':
+                            nodes.append(node.text(0))
+                            
+        elif pathToolTip == 'path not exist(s)':
+            count = path.childCount()
+            for i in range(count):
+                node = path.child(i).text(0)
+                nodes.append(node)
+            
+        return nodes
             
     def FTM_FileTextureOpen(self):
 #        node = 
