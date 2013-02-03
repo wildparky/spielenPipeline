@@ -14,7 +14,7 @@ Function:
 from pymel.core import *
 import maya.OpenMayaUI as mui
 
-import os
+import os, subprocess, shutil
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignature
@@ -29,9 +29,11 @@ class Window(QtGui.QMainWindow, Ui_TextureManager):
         super(Window, self).__init__(*args, **kwargs)
         
         self.setupUi(self)
+#        self.setWindowFlags(QtCore.Qt.FramelessWindowHint) #无边框，会造成背景透明
 
         self.TextureManager_viewWidget = TextureManager_view()
         self.setCentralWidget(self.TextureManager_viewWidget)
+        
 #===============================================================================
 # 显示部分
 #===============================================================================
@@ -73,7 +75,7 @@ class TextureManager_view(QtGui.QWidget):
         self.rightMenu = QtGui.QMenu(self.ui.treeWidget)
 
         OpenAction = QtGui.QAction(u"Open", self.ui.treeWidget)  # triggered 为右键菜单点击后的激活事件。
-        self.connect(OpenAction, QtCore.SIGNAL("triggered()"), self.findChildNodes)
+        self.connect(OpenAction, QtCore.SIGNAL("triggered()"), self.FTM_FileTextureOpen)
         self.rightMenu.addAction(OpenAction)
         
         MoveAction = QtGui.QAction(u"Move", self.ui.treeWidget)  
@@ -118,7 +120,18 @@ class TextureManager_view(QtGui.QWidget):
         :param b:
         '''
         s = set(b)
-        return [item for item in a if item not in s]     
+        return [item for item in a if item not in s]  
+       
+    def startfile(self, filename):
+        '''
+        打开文件夹或文件，适用于不同系统
+        :param filename:
+        '''
+        try:
+            os.startfile(filename)
+        except:
+            subprocess.Popen(['xdg-open', filename])
+        
 #===============================================================================
 # view主体
 #===============================================================================
@@ -280,21 +293,75 @@ class TextureManager_view(QtGui.QWidget):
         return nodes
             
     def FTM_FileTextureOpen(self):
-#        node = 
-#        selected = QtGui.QTreeWidgetItem(self.ui.treeWidget)
-        selected = self.ui.treeWidget.currentItem().child(0)
-        child = self.ui.treeWidget.findChild(QtGui.QTreeWidget, 'treeWidget')
-        print selected
+        '''
+        打开选择的节点的文件夹（如果存在的话）
+        '''
+        nodes = self.findChildNodes()
+        
+        if len(nodes) != 0 :
+            select('%s' % nodes[0], r=1)
+            filepath = selected()[0].ftn.get()            
+            if len(filepath) != 0:
+                path = os.path.dirname(filepath)               
+                if os.path.exists(path):
+                    path = os.path.normpath(path)
+                    self.startfile(path)
+            else :
+                QtGui.QMessageBox.warning(self,
+                "warning",
+                "No Folder!\n")                
     
     def FTM_FileTextureMove(self):
         '''
         移动选择的贴图文件到targetDir
         :param file:
         '''
-        print 'move'
+        nodes = self.findChildNodes()
+        targetDir = self.ui.targetDir.text()
+                
+        if len(nodes) != 0 :
+            gutNum = 0
+            badNum = 0
+            for node in nodes:
+                select('%s' % node, r=1)
+                filepath = selected()[0].ftn.get()            
+                if len(filepath) != 0:                    
+                    filepath = os.path.normpath(filepath)
+                    path, name = os.path.split(filepath)
+                    targetFile = os.path.join(str(targetDir), name)
+                    if os.path.exists(filepath):
+                        shutil.move(filepath, targetFile)
+                        gutNum += 1
+                    else:
+                        badNum += 1
+                        
+            QtGui.QMessageBox.information(self, 'Job Well Done', '%s file moved \n%s file not moved!\n' %(gutNum,badNum))
+                           
     def FTM_FileTextureCopy(self):
-        print 'copy'
-        
+        '''
+        复制贴图文件到targetDir
+        '''
+        nodes = self.findChildNodes()
+        targetDir = self.ui.targetDir.text()
+                
+        if len(nodes) != 0 :
+            gutNum = 0
+            badNum = 0
+            for node in nodes:
+                select('%s' % node, r=1)
+                filepath = selected()[0].ftn.get()            
+                if len(filepath) != 0:                    
+                    filepath = os.path.normpath(filepath)
+                    path, name = os.path.split(filepath)
+                    targetFile = os.path.join(str(targetDir), name)
+                    if os.path.exists(filepath):
+                        shutil.copy(filepath, targetFile)
+                        gutNum += 1
+                    else:
+                        badNum += 1
+                        
+            QtGui.QMessageBox.information(self, 'Job Well Done', '%s file cpoyed \n%s file not cpoyed!\n' %(gutNum,badNum))
+
 #===============================================================================
 # show
 #===============================================================================
